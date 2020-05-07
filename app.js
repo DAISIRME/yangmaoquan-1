@@ -91,6 +91,7 @@ App({
   globalData: {
     info:"",
     product_array:"",
-    jd_product_array:""
+    jd_product_array:"",
+    user_product_array:""
   }
 })

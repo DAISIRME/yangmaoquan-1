@@ -13,28 +13,25 @@ Page({
     product_array:""
   },
   onLoad: function () {
+    var startTime = new Date();
+    console.log("time"+startTime);
     wx.setNavigationBarTitle({
       title: "今日好券"
     })
     var that = this;
     wx.request({
-      url: 'http://tp.adplay.ink/QueryAllJDProduct.php',//此处不能用https，需勾选不校验合法域名，上线需使用https协议
-      data: {},									//传参
-      header: {
-        'content-type': 'application/json'
-      },
+      url: 'http://tp.adplay.ink/QueryProductByClientId.php',//此处不能用https，需勾选不校验合法域名，上线需使用https协议
+      data: {
+        'client_id':wx.getStorageSync('openId'),
+      },									//传参
       success: function(res) {
-        console.log(res.data)
         that.setData({
-          jd_product_array: res.data						//设置数据，将表中查询出来的信息传给info
-        })     
-      },
-      fail: function(err) {
-        console.log(err)
-      }
-    })
-    wx.request({
-      url: 'http://tp.adplay.ink/QueryAllProduct.php',	//此处不能用https，需勾选不校验合法域名，上线需使用https协议
+          user_product_array: res.data						//设置数据，将表中查询出来的信息传给info
+        })
+        if(res.data=='0')      
+      { 
+      wx.request({
+      url: 'https://tp.adplay.ink/QueryProductByRandom.php',//此处不能用https，需勾选不校验合法域名，上线需使用https协议
       data: {},									//传参
       header: {
         'content-type': 'application/json'
@@ -43,12 +40,20 @@ Page({
         console.log(res.data)
         that.setData({
           product_array: res.data						//设置数据，将表中查询出来的信息传给info
-        })     
+        })
+        console.log(new Date()-startTime);     
       },
       fail: function(err) {
         console.log(err)
       }
     })
+        }
+      },
+      fail: function(err) {
+        console.log(err)
+      }
+    })
+  
   },
   click: function (option) {
     wx.navigateTo({

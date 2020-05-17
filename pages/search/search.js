@@ -9,7 +9,9 @@ Page({
   data: {
     display: "none",
     Key:"",
-    RearchResultList:""
+    RearchResultList:"",
+    url:"",
+    timeAndPrice:""
   },
 
   /**
@@ -21,32 +23,54 @@ Page({
     WxSearch.init(that, 43, ['自定义', '的热门', '搜索', '列表']);
     WxSearch.initMindKeys(['检索', '内容', '的提示']);
   },
-  wxSearchFn: function (e) {
+  wxSearchInput: function (e) {
     var that = this
-    WxSearch.wxSearchAddHisKey(that);
+    WxSearch.wxSearchInput(e, that);
     that.setData({
       Key:e.detail.value
     })
+    console.log(this.data.Key)
+  },
+  wxSearchFn: function (e) {
+    var that = this
+    WxSearch.wxSearchAddHisKey(that);
+    console.log(this.data.Key)
     wx.request({
-      url: 'https://tp.adplay.ink/ComparePrice.php',
+      url: 'https://tp.adplay.ink/GETURL.php',
       data:{
         keyword:this.data.Key
       },
       success:function(res)
       {
-        console.log(res.data)
         that.setData({
-          RearchResultList:res.data
+          RearchResultList:res.data,
+          url:res.data[0]['shopAddr']
+        })
+        console.log(that.data.url),
+        console.log(res.data)
+        wx.request({
+          url: 'https://tp.adplay.ink/ComparePrice.php',
+          data:{
+            url:that.data.url
+          },
+      
+          success:function(res)
+          {
+              console.log(res.data)  
+            that.setData({
+            timeAndPrice:res.data
+          })
+          },
+          fail:function(res)
+          {
+            console.log(res.data)
+          }
         })
       },
       fail:function(res){
         console.log(res.data)
       }
     })
-  },
-  wxSearchInput: function (e) {
-    var that = this
-    WxSearch.wxSearchInput(e, that);
   },
   wxSerchFocus: function (e) {
     var that = this
@@ -74,9 +98,8 @@ Page({
   },
   click: function(option){
     wx.navigateTo({
-      url: '/pages/data/data'
+      url: '/pages/data/data?url='+this.data.url,
     })
-
   },
 
   /**

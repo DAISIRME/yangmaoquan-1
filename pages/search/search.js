@@ -21,12 +21,16 @@ Page({
     WxSearch.init(that, 43, ['自定义', '的热门', '搜索', '列表']);
     WxSearch.initMindKeys(['检索', '内容', '的提示']);
   },
-  wxSearchFn: function (e) {
-    var that = this
-    WxSearch.wxSearchAddHisKey(that);
+  SearchInput:function(e)
+  {
+    var that=this
     that.setData({
       Key:e.detail.value
     })
+  },
+  wxSearchFn: function (e) {
+    var that = this
+    WxSearch.wxSearchAddHisKey(that);
     wx.request({
       url: 'https://tp.adplay.ink/ComparePrice.php',
       data:{
@@ -47,6 +51,10 @@ Page({
   wxSearchInput: function (e) {
     var that = this
     WxSearch.wxSearchInput(e, that);
+    that.setData({
+      keyword:e.detail.value
+    }),
+    console.log(e.detail.value)
   },
   wxSerchFocus: function (e) {
     var that = this
@@ -74,7 +82,7 @@ Page({
   },
   click: function(option){
     wx.navigateTo({
-      url: '/pages/data/data'
+      url: '/pages/data/data?ulr='
     })
 
   },

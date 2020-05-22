@@ -3,7 +3,7 @@ import * as echarts from '../../ec-canvas/echarts';
 
 var historyTime;
 var historyPrice;
-
+var history;
 function initChart(canvas, width, height, dpr) {
   const chart = echarts.init(canvas, null, {
     width: width,
@@ -95,8 +95,7 @@ Page({
   data: {
     ec: {
       onInit: initChart
-    }
-
+    },
   },
 
   /**
@@ -104,8 +103,24 @@ Page({
    */
   onLoad: function (options) {
     var that = this;
-    var history = options.history;
-    console.log(history);
+    wx.request({
+      url: 'https://tp.adplay.ink/ComparePrice.php',
+      data:{
+        url:options.url
+      },
+      success:function(res)
+      {
+        console.log(res.data)
+        history = res.data
+        console.log(history)
+      },
+      fail:function(res)
+      {
+        console.log(res.data)
+      }
+    },
+    )
+    console.log(history)
     var flag = false;
     for (var i = 0; i < history.length; i++) {
       if (history[i] == "]") {

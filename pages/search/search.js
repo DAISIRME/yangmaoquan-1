@@ -11,7 +11,8 @@ Page({
     Key:"",
     RearchResultList:"",
     url:"",
-    timeAndPrice:""
+    timeAndPrice:"",
+    startTime:""
   },
 
   /**
@@ -33,6 +34,7 @@ Page({
   },
   wxSearchFn: function (e) {
     var that = this
+    that.data.startTime = new Date()
     WxSearch.wxSearchAddHisKey(that);
     console.log(this.data.Key)
     wx.request({
@@ -46,7 +48,8 @@ Page({
           RearchResultList:res.data,
         })
         console.log(that.data.url),
-        console.log(res.data)
+        console.log(res.data),
+        console.log(new Date()-that.data.startTime)
       },
       fail:function(res){
         console.log(res.data)
@@ -79,7 +82,7 @@ Page({
   },
   click: function(option){
     wx.navigateTo({
-      url: '/pages/data/data?name='+ option.currentTarget.dataset.name + '&price=' + option.currentTarget.dataset.price + '&img=' + option.currentTarget.dataset.img + '&source=' + option.currentTarget.dataset.source + '&history=' + option.currentTarget.dataset.history, 
+      url: '/pages/data/data?name='+ option.currentTarget.dataset.name + '&price=' + option.currentTarget.dataset.price + '&img=' + option.currentTarget.dataset.img + '&source=' + option.currentTarget.dataset.source + '&url=' +option.currentTarget.dataset.url,
     })
   },
 
@@ -131,4 +134,5 @@ Page({
   onShareAppMessage: function () {
 
   }
+})
 })

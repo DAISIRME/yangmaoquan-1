@@ -2,7 +2,6 @@
 var WxSearch = require('../../wxSearch/wxSearch.js');
 var app = getApp();
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -22,18 +21,25 @@ Page({
     WxSearch.init(that, 43, ['自定义', '的热门', '搜索', '列表']);
     WxSearch.initMindKeys(['检索', '内容', '的提示']);
     console.log(app.globalData.key)
+    wx.request({
+      url: 'https://tp.adplay.ink/QueryHotSearch.php',
+      success:function(res)
+      {
+        app.globalData.hot_list = res.data
+        console.log(app.globalData.hot_list)
+      }
+    })
   },
   wxSearchInput: function (e) {
     var that = this
     WxSearch.wxSearchInput(e, that);
     app.globalData.key = e.detail.value
-
-    console.log(this.data.Key)
+    console.log(app.globalData.Key)
   },
   wxSearchFn: function (e) {
     var that = this
     WxSearch.wxSearchAddHisKey(that);
-    console.log(this.data.Key)
+    console.log(app.globalData.key)
     wx.request({
       url: 'https://tp.adplay.ink/GETURL.php',
       data:{
@@ -49,6 +55,16 @@ Page({
       },
       fail:function(res){
         console.log(res.data)
+      }
+    }),
+    wx.request({
+      url: 'https://tp.adplay.ink/RecordQuery.php',
+      data:{
+         product_id:app.globalData.key
+      },
+      success:function(res)
+      {
+
       }
     })
   },
